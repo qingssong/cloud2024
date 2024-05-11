@@ -44,7 +44,10 @@ public class OrderController
     @GetMapping("/consumer/payment/get/{id}")
     public CommonResult getPayment(@PathVariable Long id)
     {
-        return restTemplate.getForObject(PaymentSrv_URL + "/payment/get/"+id, CommonResult.class, id);
+        List<ServiceInstance> instances = discoveryClient.getInstances("CLOUD-PAYMENT-SERVICE");
+
+           return restTemplate.getForObject(PaymentSrv_URL + "/payment/get/"+id, CommonResult.class, id);
+
     }
 
     @GetMapping("/consumer/payment/getForEntity/get/{id}")
@@ -66,7 +69,7 @@ public class OrderController
         }
         ServiceInstance serviceInstance = loadBalancer.instances(instances);
         URI uri = serviceInstance.getUri();
-
+        System.out.println("*****uri: "+uri);
         return restTemplate.getForObject(uri+"/payment/lb",String.class);
     }
 }
